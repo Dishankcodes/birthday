@@ -1,1 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Happy Birthday Nivyaaaa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: url('flower.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    #countdownOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.95);
+      font-family: 'Great Vibes', cursive;
+      font-size: 10rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      background-image: linear-gradient(120deg, #ff69b4, #ffb6c1, #f08080);
+      animation: glowZoom 1s ease-in-out infinite;
+      text-shadow: 0 0 30px rgba(255, 182, 193, 0.6), 0 0 50px rgba(255, 105, 180, 0.5);
+      transition: opacity 0.6s ease;
+    }
+
+    @keyframes glowZoom {
+      0% {
+        transform: scale(0.95);
+        text-shadow: 0 0 10px rgba(255, 182, 193, 0.4);
+      }
+      50% {
+        transform: scale(1.15);
+        text-shadow: 0 0 30px rgba(255, 105, 180, 0.8), 0 0 60px rgba(255, 182, 193, 0.7);
+      }
+      100% {
+        transform: scale(0.95);
+        text-shadow: 0 0 10px rgba(255, 182, 193, 0.4);
+      }
+    }
+
+    /* Flipbook container with perspective */
+    .book {
+      width: 700px;
+      height: 500px;
+      perspective: 1500px;
+      position: relative;
+    }
+
+    /* Each page styled as a card with 3D flip */
+    .page {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform-style: preserve-3d;
+      transition: transform 1.2s ease;
+      cursor: pointer;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.15);
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      user-select: none;
+      z-index: 0;
+    }
+
+    .page img {
+      max-width: 60%;
+      max-height: 320px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .page h1,
+    .page p {
+      color: #c75c5c;
+    }
+
+    /* Front face of the page */
+    .front {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 20px;
+      overflow: hidden;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Back face of the page */
+    .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, #fff0f5, #ffe4e1);
+      border-radius: 20px;
+      backface-visibility: hidden;
+      transform: rotateY(180deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #c75c5c;
+      padding: 20px;
+      user-select: none;
+    }
+
+    /* Flipped pages rotateY -180deg */
+    .flipped {
+      transform: rotateY(-180deg);
+      pointer-events: none;
+    }
+
+    canvas.confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Petals falling effect */
+    .petal {
+      position: fixed;
+      top: -50px;
+      background: url('lily.png') no-repeat center center/contain;
+      opacity: 0.7;
+      animation-name: floatDown;
+      animation-timing-function: linear;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    @keyframes floatDown {
+      0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Image group for two images on previous last page */
+    .image-group {
+      display: flex;
+      justify-content: center;
+      gap: 20px; /* space between images */
+      margin-bottom: 20px;
+      flex-wrap: wrap; /* wrap on smaller screens */
+      width: 100%;
+    }
+
+    .image-group img {
+      max-width: 45%; /* each image max 45% width */
+      height: auto;
+      border-radius: 15px;
+      object-fit: cover;
+      box-shadow: 0 4px 8px rgba(199, 92, 92, 0.3);
+      margin-bottom: 0; /* override previous margin */
+      pointer-events: none;
+    }
+
+    /* New image group style for last page with 3 images */
+    .image-group-3 {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .image-group-3 img {
+      max-width: 30%;
+      height: auto;
+      border-radius: 15px;
+      object-fit: cover;
+      box-shadow: 0 4px 8px rgba(199, 92, 92, 0.3);
+      pointer-events: none;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="countdownOverlay">3</div>
+  <canvas class="confetti" id="confettiCanvas"></canvas>
+
+  <!-- Background music -->
+  <audio id="bgMusic" autoplay loop>
+    <source src="https://cdn.pixabay.com/download/audio/2021/10/30/audio_6f8d09728a.mp3?filename=gentle-piano-ambient-10862.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Optional: tick sound for countdown -->
+  <audio id="tickSound">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_8120dbe1b7.mp3?filename=tick-1-125738.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Flipbook container -->
+  <div class="book" id="book">
+    <div class="page" style="z-index: 6;">
+      <div class="front">
+        <img src="n1.jpg" alt="Happy Birthday Image 1" />
+        <h1>💌✨🫶💅😙🌸 Happiesttt 19th Birthdayyyyyyy Nivyaaaaaa 💗🫶😙🌸🌷🎉🎀</h1>
+      </div>
+      <div class="back"></div>
+    </div>
+
+    <div class="page" style="z-index: 5;">
+      <div class="front">
+        <img src="n2.jpg" alt="Beautiful Flowers" />
+        <p>Mariii cutudi mateee ek aur gifttt 😙🎀marii taraf thii hehe thiss card is for you nivyuuu 💌💗 i loveee youuu soo muchh nivyuuudii loveee youuu loveee youuu 🌷🥹💗💌💅🧿💞💕,u are the best tarii life bhale game tevi chalri hoyy huu taro sath hameshaa aapis ane make sure tane roj happy happy rakhhuu tu kyarey  rade naii eej mari wish chhe ane tane best rite treat karuu 🥹🥹 reminder: you are the best in the world (onto the next page)
+
+        </p>
+      </div>
+      <div class="back"></div>
+    </div>
+
+    <div class="page" style="z-index: 4;">
+      <div class="front">
+        <img src="n3.jpg" alt="Field of Flowers" />
+        <p>Mariii watermelon psyduckkk pookieeee🎀🎀 tuuu ekdum naani bacchiii jevii 🫶🤌🫠cuteee chhe tuu ketli cuteee chhe tane nathi khabar tuu bauuu cuteeee as flower chheee pillow tariii lifee maa b taraaa jhhmkaa ni jem lamba lamba time sudhii khusiyaaa aaveee ane tariii nani bindi ni jem dukh dekhaii b naii aenii responsebilty mariiii chhe have hehe, I'll pray for youu everydayyy marii cutieeee potatooo 😙🫶🥹💗💕🌷🎀i loveeeeweee youuuuu sooo muchh nivyuuudii biladiiii🛐🫶🏻💞🌷
+
+        </p>
+      </div>
+      <div class="back"></div>
+    </div>
+
+    <div class="page" style="z-index: 3;">
+      <div class="front">
+        <img src="n4.jpg" alt="Sunflower Smile" />
+        <p> Nivyuuudii taariii smilee b taraa jevii cutee chhe tarii nani nani vastuu b bauu saras chhe cutudu maruu tane traditional ma joine tohh huu pighli j javv chhuu i melt for real🫠🫠🥹💞🫶🏻tuu aam j smileee kartii ree bavv stress naa le tane koi b tension aave toh tuuu mane kaiss tumharaa tension meraa tension hehe🫶🏻💗😙tuuuu bauu j beautiful chheee tuuu manee bauu j gamee chheee i loveee youuuu so muchhu cutudu🎀🌷💕🫶💗
+          Reminder ; hasti rahe tu hasti rahe subh ki dali hasti rahe😙💗🫶🏻
+          <br> Smile like sunflowers do to the sun. You’re radiant!🌻</p>
+      </div>
+      <div class="back"></div>
+    </div>
+
+    <div class="page" style="z-index: 2;">
+      <div class="front">
+        <div class="image-group">
+          <img src="n6.jpg" alt="Joy and Laughter" />
+          <img src="ajab.jpg" alt="Extra Birthday Surprise" />
+        </div>
+        <p>Hehe last page about your eyes 🫶🏻😙haaye yeee aankhe kyaaa hi bole i want to describe some lyrics on nivyuu's eyess 😎(chasma pahna karo varna itni roshni hai ki mai andha hojauga aankhe dekhkar(apke pyar mai)) hehe this lyrics for youu myy girll 🌷🎀😙🫶🏻💕✨💌tariiii ankhoooo uffff ketliii sundar chheee taraa hairs tariii smileee taru behaviour tari personality badhuu perfect chhe nivyuu I'm just lucky boy to havee youuu in my lifeee 🎉🌸🫴i loveeeeweee youuuuu sooo much nivyuuudi😙😙🎀🌷🫶🏻🧿no nazar to you my girlll💖
+          
+        </p>
+      </div>
+      <div class="back"></div>
+    </div>
+
+    <!-- NEW LAST PAGE with 3 images -->
+    <div class="page" style="z-index: 1;">
+      <div class="front">
+        <div class="image-group-3">
+          <img src="s1.jpg" alt="Extra Image 1" />
+          <img src="s2.jpg" alt="Extra Image 2" />
+          <img src="s3.jpg" alt="Extra Image 3" />
+        </div>
+        <p>Here some lyrics i want to dedicted just for you, Nivyaaaa! 🌸💖✨</p>
+      </div>
+      <div class="back"></div>
+    </div>
+
+  </div>
+
+  <div id="petal-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const pages = document.querySelectorAll('.page');
+    const countdownOverlay = document.getElementById('countdownOverlay');
+    const confettiCanvas = document.getElementById('confettiCanvas');
+    const tickSound = document.getElementById('tickSound');
+    let currentPageIndex = 0;
+
+    // Countdown from 3 to 1
+    async function startIntro() {
+      for (let i = 3; i > 0; i--) {
+        countdownOverlay.textContent = i;
+        tickSound.currentTime = 0;
+        tickSound.play();
+        await new Promise(res => setTimeout(res, 1000));
+      }
+      countdownOverlay.style.opacity = 0;
+      setTimeout(() => countdownOverlay.remove(), 600);
+    }
+
+    // Flip next page and adjust z-index so flipped pages go behind
+    function flipNextPage() {
+      if (currentPageIndex >= pages.length) return;
+
+      const page = pages[currentPageIndex];
+      page.classList.add('flipped');
+      // Lower z-index so flipped pages go behind
+      page.style.zIndex = 0;
+
+      currentPageIndex++;
+
+      if (currentPageIndex === pages.length) {
+        // Final confetti blast on last page flipped
+        window.confetti({
+          particleCount: 300,
+          spread: 150,
+          origin: { y: 0.5 },
+        });
+      }
+    }
+
+    // Petal falling effect
+    function createPetal() {
+      const petal = document.createElement('div');
+      petal.classList.add('petal');
+      petal.style.left = Math.random() * window.innerWidth + 'px';
+      petal.style.width = (10 + Math.random() * 20) + 'px';
+      petal.style.height = petal.style.width;
+      petal.style.animationDuration = (8 + Math.random() * 7) + 's';
+      petal.style.animationDelay = (Math.random() * 5) + 's';
+      document.body.appendChild(petal);
+
+      setTimeout(() => {
+        petal.remove();
+      }, 15000);
+    }
+
+    // Create petals continuously
+    setInterval(createPetal, 300);
+
+    // On load
+    window.onload = async () => {
+      await startIntro();
+
+      // Enable flipping pages by clicking anywhere on the book
+      const book = document.getElementById('book');
+      book.addEventListener('click', flipNextPage);
+
+      // Initial console log
+      console.log('Birthday card loaded. Click to flip pages!');
+    };
+  </script>
+</body>
+</html>
 
